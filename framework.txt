@@ -1,0 +1,146 @@
+
+struct IApplication
+{
+  virtual int Execute() = 0;
+};
+
+struct IGraphic
+{
+   virtual void DrawText(const std::string & Text) = 0;
+};
+
+struct ConsoleGraphic : public IGraphic
+{
+    virtual void DrawText(const std::string & Text)
+    {
+        std::cout << Text;
+    }
+};
+struct IInput
+{
+   virtual int const   GetC() = 0;
+};
+
+struct KeyboardCharacterInput : public IInput
+{
+
+    virtual int const GetC()
+    {
+        int c = '\0';
+        if (std::cin.good() != true)
+            std::cin.clear();
+        std::cin >> c;
+        return c;
+    }
+
+};
+
+
+
+struct ConsoleApplication : public IApplication
+{
+
+   
+    static IApplication* Create() {
+        if (Instance == nullptr) {
+            Instance = new ConsoleApplication();
+        }
+        return Instance;
+    }
+
+    virtual int Execute()
+    {
+        bool ExitCode = 0;
+
+        if (IsRunning != true)
+        {
+            IsRunning = true;
+
+            while (IsRunning)
+            {
+                OnUpdate(GetInput());
+                OnDraw(GetGraphic());
+            }
+            ExitCode =  OnExit();
+        }
+
+        return ExitCode;
+    }
+
+protected:
+
+    ConsoleApplication()
+        :ConsoleInput(new KeyboardCharacterInput()), Graphic(new ConsoleGraphic())
+
+    {
+        IsRunning = false;
+    }
+    void OnUpdate(IInput &InputObject)
+    {
+        int c = InputObject.GetC();
+
+        if (c == -1)
+        {
+            IsRunning = false;
+        }
+    }
+    void OnDraw(IGraphic &Graphic)
+    {
+        Graphic.DrawText("Welcome to my Game");
+    }
+    int  OnExit() {
+        return 0;
+    }
+private:
+    static IApplication *Instance;
+    IInput & GetInput() {
+        return *ConsoleInput;
+    }
+
+    IGraphic & GetGraphic() {
+        return *Graphic;
+    }
+
+    
+    bool     IsRunning;
+    IInput   *ConsoleInput;
+    IGraphic *Graphic;
+};
+
+
+struct StartApplication
+{
+ 
+
+    StartApplication() {
+        App_Ptr = ConsoleApplication::Create();
+    }
+
+    int  Start()
+    {
+        int finsihed = 0;
+
+        if (App_Ptr != nullptr)
+        {
+            finsihed = App_Ptr->Execute();
+        }
+        return finsihed;
+    }
+    ~StartApplication() {
+        if(App_Ptr != nullptr)
+        delete App_Ptr;
+    }
+
+private:
+    IApplication *App_Ptr;
+};
+
+IApplication * ConsoleApplication::Instance = nullptr;
+
+int main() {
+  
+   
+    StartApplication App;
+    return  App.Start();
+
+}

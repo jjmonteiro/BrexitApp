@@ -1,35 +1,47 @@
+enum  class sf_ResourceID
+{
+    HEADER_1,
 
-#ifndef APPLICATION_BASE_FILE_H
-#define APPLICATION_BASE_FILE_H
-
-using namespace std;
-
-
-enum LEVELS { LEVEL_ZERO, LEVEL_ONE, LEVEL_TWO, LEVEL_THREE, LEVEL_FOUR, EXIT };
-enum RESULTS { RESULT_ZERO, EXTENSION, NO_DEAL, NO_BREXIT, ELECTIONS };
-
-
-
-struct CreateApplication
+};
+struct sfResourceFile
 {
 
-    CreateApplication();
+    sfResourceFile()
+    {
+
+    }
+
+    bool const Register(sf_ResourceID ResId, std::string const   Resource)
+    {
+        return false;
+    }
+
+    std::string const GetResource(sf_ResourceID ResId)
+    {
+        return __Resources[ResId];
+    }
+
+
 private:
-    void DisplayTitle();
-    void ClearScreen();
-    void DisplayMenu_1();
-    void DisplayMenu_2();
-    void DisplayMenu_4();
-    void DisplayMenuExit();
-    void PrintResultsTitle();
-    void PrintResult_1();
-    void PrintResult_2();
-    void PrintResult_3();
-    void PrintResult_4();
-public:
-    char GetUserInputChar();
-    void DisplayMenu(int menuSelection);
-    void PrintResults(int menuSelection);
+    std::map<sf_ResourceID, std::string> __Resources;
 };
 
-#endif
+const char  *TITLE_0 = "+++ BREXIT NEXT STEPS +++\n\n";
+const char  *TITLE_1 = "29 Mar: MPs reject withdrawal agreement. Brexit date stays as 12 Apr.\n\n";
+
+static const char  *QUESTION_1 = "1 Apr: Second indicative votes. Clear result? (y/n)\n";
+const char  *QUESTION_2 = "Will Theresa May accept plan? (y/n)\n";
+const char  *QUESTION_3 = "Possible options:\n1. No-deal Brexit.\n2. Cancel Brexit.\n3. Further extension.\n";
+const char  *QUESTION_4 = "\nEXIT? (y/n)";
+
+const char  *RESULT_0 = "\n\nPossible results:\n";
+const char  *RESULT_1 = ">Government tries to implement decision: Possible further extension.\n";
+const char  *RESULT_2 = ">The UK leaves the EU without a Deal.";
+const char  *RESULT_3 = ">The UK cancels brexit and remains in the EU.";
+
+sfResourceFile ResObject;
+
+CreateApplication::CreateApplication()
+{
+    ResObject.Register(sf_ResourceID::HEADER_1, "+++ BREXIT NEXT STEPS +++\n\n");
+}
